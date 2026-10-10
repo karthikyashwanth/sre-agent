@@ -1,0 +1,35 @@
+RUNBOOK: Pod Pending
+
+Symptoms:
+Pod status shows Pending
+Pod not scheduled on any node
+
+Investigation Steps:
+1. Run: kubectl describe pod <pod-name>
+2. Check Events section at bottom
+3. Run: kubectl get nodes
+4. Run: kubectl top nodes
+
+Common Causes and Fixes:
+
+Insufficient Resources:
+  Nodes do not have enough CPU or memory
+  Fix: Scale up node group in AWS EKS console
+  Or: kubectl scale nodegroup --desired 4
+
+Node Selector Mismatch:
+  Pod requires specific node label
+  Fix: Check nodeSelector in deployment YAML
+  Remove or fix nodeSelector
+
+Taints and Tolerations:
+  Node has taint pod cannot tolerate
+  Fix: Add toleration to pod spec
+
+PVC Not Bound:
+  Storage not available
+  Fix: kubectl get pvc
+  Check storage class exists
+
+Escalation:
+If nodes cannot be added escalate to infrastructure team

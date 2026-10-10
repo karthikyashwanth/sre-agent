@@ -1,0 +1,40 @@
+RUNBOOK: High CPU Alert
+
+Symptoms:
+CPU usage above 80% on pods or nodes
+HPA scaling not keeping up
+Application response times increasing
+
+Investigation Steps:
+1. Run: kubectl top pods -n <namespace>
+2. Run: kubectl top nodes
+3. Check HPA status: kubectl get hpa
+4. Check application logs for loops or errors
+
+Common Causes and Fixes:
+
+Infinite Loop in Application:
+  Check application logs for repeated messages
+  Fix: Redeploy with bug fix
+  kubectl rollout restart deployment <name>
+
+HPA Not Scaling:
+  Check metrics server: kubectl top pods works?
+  Check HPA target: kubectl describe hpa
+  Fix: Install metrics server if missing
+
+Resource Limits Too Low:
+  Increase CPU limit in deployment
+  resources:
+    limits:
+      cpu: "1000m"
+    requests:
+      cpu: "500m"
+
+Node Level High CPU:
+  Check which pods consuming most CPU
+  kubectl top pods --sort-by=cpu
+  Consider scaling node group
+
+Escalation:
+If CPU stays above 90% for 10 minutes escalate immediately

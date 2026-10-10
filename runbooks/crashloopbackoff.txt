@@ -1,0 +1,33 @@
+RUNBOOK: CrashLoopBackOff
+
+Symptoms:
+Pod status shows CrashLoopBackOff
+Pod keeps restarting repeatedly
+
+Investigation Steps:
+1. Run: kubectl logs <pod-name> --previous
+2. Run: kubectl describe pod <pod-name>
+3. Check exit code in describe output
+
+Exit Code Meanings:
+Exit Code 1   = Application crashed, check logs
+Exit Code 137 = OOMKilled, increase memory limit
+Exit Code 143 = Terminated by signal
+
+Common Fixes:
+OOMKilled:
+  Increase memory limit to 512Mi in deployment YAML
+  resources:
+    limits:
+      memory: "512Mi"
+
+Missing Secret:
+  kubectl get secret <secret-name>
+  Create secret if missing
+
+Wrong Environment Variable:
+  kubectl exec -it <pod> -- env
+  Check all required variables are set
+
+Escalation:
+If not resolved in 30 minutes escalate to lead engineer
